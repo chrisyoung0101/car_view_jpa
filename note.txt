@@ -1,0 +1,75 @@
+About this app : This app uses car.html that contains an input form and a list using thymeleaf.
+There are two handler methods in the controller.  One for GET & one for POST. See detailed notes
+on these.  This app hits a MySQL table.  When user submits data through view, the data gets put
+into the table. We get a redirect and the list updates, right?
+
+//
+How classes are sharing instances : 
+
+CarService Class autowires CarRepository carRepository
+CarController Class autowires CarService carService
+
+
+
+
+Note: when using annotations in code focus on the import for more info and context of what is actually going on. 
+
+Note : One part of confusion is not understanding which annotation goes with which API/technology.  What is an annotation really?
+
+See https://docs.oracle.com/javase/tutorial/java/annotations/index.html
+
+
+How this app works : 
+//////////////////
+Car Class : 
+//////////////////
+
+This is a POJO (I think).  @Entity annotation is from the Java Persistence API.  (Note : this is not a Spring annotation per se however perhaps Spring scans and puts @Entity annotated classes & puts them into it's context?? Not sure ) 
+
+See www.concretepage.com/java/jpa/jpa-entity-example
+
+@Entity annotated classes refer to a database table.  The setters/getters fetch data from the database.  
+
+@Id enables an attribute of an entity to behave like a primary key of a table.  A primary key uniquely identifies each record in a table.  Primary Keys must contain unique values and cannot contain null values.  A table can only have one PK.  A PK can consist of single or multiple column fields.  
+
+??Do we need to have the constructors on this class? 
+
+//////////////////
+CarRepository Class : 
+//////////////////
+At this moment... it is magical... just go for it and use it.
+
+This could be helpful here : 
+https://blog.sapiensworks.com/post/2014/06/02/The-Repository-Pattern-For-Dummies.aspx
+
+And maybe this as well :
+https://stackoverflow.com/questions/31305199/repository-pattern-how-to-understand-it-and-how-does-it-work-with-complex-en
+
+
+See Baeldung site :
+
+Tried this but when I changed to JpaRepository from CrudRepository the @Autowired carRepository type bean can not be found... not sure why?? So using  CrudRepository --> (Extending JpaRepository as this is used in Alyssa's app and contains the full API of the CrudRepository and PagingAndSortingRepository combined.  All these extend the generic Repository interface(whatever and wherever that is). )
+
+
+
+//////////////////
+CarService Class : 
+//////////////////
+This autowires in carRepository.  Here, we are creating the addCar() method, passing in a Car object (where is this object coming from? Our Car class?)   When this method is called, it will call a method that lives on carRepository called save().  save() is part of the CRUD functionality we inherit.  
+
+
+//////////////////
+CarController Class : 
+//////////////////
+
+See note from gs-handling-form-submission in spring-io-guides folder.  The spring guide has a very thorough explanation of a lot of the controller. 
+
+@Controller from Spring makes this a Spring Controller Class.  We bring in or autowire in an instance of CarService called carService.  We have two methods, currently, inside this controller.  carForm() is just interested in presenting the initial view. this view is named car.html.  
+
+carForm() method : 
+
+@GetMapping allows carForm() to listen for the URL.. sort of.  When the URL matches "/car".  So, this carForm() method is sitting there and listening to the URL.  At some point,  "/car" matches in the URL, initially (as I think that because we want this method to kick in first and we have two).  A match kicks in this method and a whole lotta stuff begins... We are passing in a model object. To model, we set the attribute "car" to a new Car object(is this where the data is coming in from the view?).  The model is what will supply the "car" view in the return of this method.  In essence, we are using model to expose a new Greeting object to the view.  This Car object contains fields such as `id`, `make`, `model`, `year` (gotta be how the data comes in right?).  The fields/attributes on the Car object correspond to the form fields in the car view.  These fields are used to capture info from the form.  
+
+carSubmit() method : 
+
+When user submits the form the magic happens... "car", as an object / view / whatever, is the @ModelAttribute that we are passing in to this method.  This should basically mean that "car" is simply an attribute of the model object we are using (can we think of "car" as being an object that is acting as an attribute of our Model object?).  In all simplistic of explanations, the way we have coded this method allows it to grab user input data and save it to the DB.  Note how the CarService class holds the addCar() method.  Because we brought in an instance of carService, we can call this method from our controller.  At the end of the day, this allows us to save the data we got from the view as a object of Car type to our database.  

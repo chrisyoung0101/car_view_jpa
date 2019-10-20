@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h1>Car List</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Year</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- if true, display this       -->
+<!--    <tr th:if="${!list}">-->
+<!--        <td colspan="2"> No Cars Available</td>-->
+<!--    </tr>-->
+    <!--  otherwise, iterate over list and display info      -->
+    <tr th:each="car : ${list}">
+        <td><span th:text="${car.id}">Id</span></td>
+        <td><span th:text="${car.make}">Make</span></td>
+        <td><span th:text="${car.model}">Model</span></td>
+        <td><span th:text="${car.year}">Year</span></td>
+
+    </tbody>
+</table>
+</body>

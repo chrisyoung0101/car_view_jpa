@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h1>Car Form</h1>
+<h3>car_view_jpa</h3>
+<!--th:action="@{/car} directs the form to POST to the /car endpoint.  carSubmit() method of CarController will handle this/     -->
+<!--th:object="${car} declares the model object to use for collecting the form data.    -->
+<form action="#" th:action="@{/car}" th:object="${car}" method="post">
+    <!--  th:field="*{id}  th:field="*{content} correspond to the fields in the Car object.  See Car class  -->
+    <p>Id: <input type="text" th:field="*{id}"/></p>
+    <p>Make: <input type="text" th:field="*{make}"/></p>
+    <p>Model: <input type="text" th:field="*{model}"/></p>
+    <p>Year: <input type="text" th:field="*{year}"/></p>
+    <p><input type="submit" value="Submit"/> <input type="reset" value="Reset"/></p>
+</form>
+
+<h1>Car List</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Year</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- if true, display this       -->
+<!--    cars = ArrayList -->
+    <tr th:if="${!cars}">
+        <td colspan="2"> No Cars Available</td>
+    </tr>
+    <!--  otherwise, iterate over list and display info      -->
+    <tr th:each="car : ${cars}">
+        <td><span th:text="${car.id}">Id</span></td>
+        <td><span th:text="${car.make}">Make</span></td>
+        <td><span th:text="${car.model}">Model</span></td>
+        <td><span th:text="${car.year}">Year</span></td>
+
+    </tbody>
+</table>
+</body>
+</html>
